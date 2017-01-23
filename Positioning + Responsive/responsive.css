@@ -1,0 +1,101 @@
+.navburger {
+  position: relative;
+  justify-content: flex-start;
+  padding-left: 40px;
+  padding-top: 35px; }
+  .navburger:before {
+    background-image: url("burger-black.png");
+    background-size: 42px 26px;
+    width: 42px;
+    height: 26px;
+    content: ''; }
+  .navburger:focus {
+    /* clicking on label should toggle the menu */
+    pointer-events: none; }
+    .navburger:focus .navburger-content {
+      /*  opacity is 1 in opened state (see below) */
+      opacity: 1;
+      visibility: visible;
+      /* don't let pointer-events affect descendant elements */
+      pointer-events: auto; }
+  .navburger li {
+    display: list-item;
+    border-bottom: 1px solid #ccc; }
+  .navburger .navburger-content {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    left: 0;
+    top: 50px;
+    /* use opacity to fake immediate toggle */
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0.5s; }
+
+* {
+  /* Set to make using of padding easier */
+  box-sizing: border-box; }
+
+body {
+  font-family: "Trirong", serif;
+  font-size: medium;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 10px 30px 30px 30px; }
+
+h1 {
+  font-size: 3.2em;
+  font-weight: bold;
+  text-align: center; }
+
+ol, ul {
+  list-style: none; }
+
+nav li {
+  display: inline-block; }
+
+.flex-container, .flex-container-centered {
+  display: flex; }
+
+.flex-container-centered {
+  align-items: center;
+  justify-content: center; }
+
+.uppercase {
+  text-transform: uppercase; }
+
+.nav-list {
+  justify-content: space-between; }
+
+.header-section {
+  flex-basis: 0;
+  flex-grow: 1; }
+
+.nav-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0; }
+
+.big-text {
+  font-weight: bold;
+  font-size: 3.2em; }
+
+.non-decorated {
+  text-decoration: none;
+  color: initial; }
+
+.shop-link {
+  color: #5160a6; }
+
+@media (max-width: 850px) {
+  .navburger {
+    display: inline-flex; }
+  .header-section.nav-list {
+    display: none; } }
+
+@media (min-width: 850px) {
+  .navburger {
+    display: none; }
+  .header-section.nav-list {
+    display: flex; } }

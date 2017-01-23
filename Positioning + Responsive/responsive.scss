@@ -1,0 +1,93 @@
+@import "variables.scss";
+@import "navburger.scss";
+
+* {
+    /* Set to make using of padding easier */
+    box-sizing: border-box;
+}
+
+body {
+    font-family: $main-font-family;
+    font-size: $main-font-size;
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 10px 30px 30px 30px;
+}
+
+h1 {
+    font-size: $header-font-size;
+    font-weight: bold;
+    text-align: center;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+nav li {
+    display: inline-block;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-container-centered {
+    @extend .flex-container;
+    align-items: center;
+    justify-content: center;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.nav-list {
+    justify-content: space-between;
+}
+
+.header-section {
+    flex-basis: 0;
+    flex-grow: 1;
+}
+
+.nav-wrapper {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+
+.big-text {
+    font-weight: bold;
+    font-size: $header-font-size;
+}
+
+.non-decorated {
+    text-decoration: none;
+    color: initial;
+}
+
+.shop-link {
+    color: $main-link-color;
+}
+
+@media(max-width: $navigation-switch-width) {
+    .navburger {
+        display: inline-flex;
+    }
+
+    .header-section.nav-list {
+        display: none;
+    }
+}
+
+@media(min-width: $navigation-switch-width) {
+    .navburger {
+        display: none;
+    }
+
+    .header-section.nav-list {
+        display: flex;
+    }
+}
