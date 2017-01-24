@@ -3,16 +3,12 @@
     string containing operators and integer operands
 */
 
-exports.OperatorEnum = {
-    PLUS : '+',
-    MINUS: '-',
-    MULT: '*'
-};
-
-exports.getResult = function (input) {
+exports.getResult = function (input, extraOperators) {
     if (!input) {
         throw new Error("input cannot be empty");
     }
+
+    initOperators(extraOperators);
 
     let operandStack = [];
     for (let token of exports.scanInput(input)) {
@@ -34,6 +30,7 @@ exports.getResult = function (input) {
         throw new Error('invalid infix expression');
     }
 
+    console.log(operandStack[0]);
     return operandStack[0];
 };
 
@@ -42,11 +39,26 @@ exports.scanInput = function(input) {
     return parsedTokenStrings.map(parseToken);
 };
 
+function initOperators(extraOperators) {
+    exports.OperatorEnum = {
+        PLUS : '+',
+        MINUS: '-',
+        MULT: '*'
+    };
+
+    if (extraOperators) {
+        Object.assign(exports.OperatorEnum, extraOperators);
+    }
+};
+
 function evaluate(op, arg1, arg2) {
     switch (op) {
         case exports.OperatorEnum.PLUS: return arg1 + arg2;
         case exports.OperatorEnum.MINUS: return arg1 - arg2;
         case exports.OperatorEnum.MULT: return arg1 * arg2;
+        
+        /* Additional operators which can be passed via extraOperators variable */
+        case '%': return arg1 % arg2;
 
         default: throw new Error('unknown operator ' + op);
     }

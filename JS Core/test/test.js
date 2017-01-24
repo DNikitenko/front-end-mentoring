@@ -30,6 +30,14 @@ describe('Calc', function() {
         it('should calculate complex arithmetic expression', function() {
             assert.equal(calc.getResult('5 1 2 + 4 * + 3 -'), 5 + ((1 + 2) * 4) - 3)
         });
+
+        it('should calculate an expression with additional % operator', function() {
+            assert.equal(calc.getResult("12 23 % 2 *", { MOD: '%' }), (12 % 23) * 2);
+        });
+
+        it('should fail if additional % operator is not passed as a parameter', function() {
+            assert.throws(() => calc.getResult("12 23 % 2 *"), Error);
+        });
     });
 
     describe('scanInput', function() {
