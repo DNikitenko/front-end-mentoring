@@ -6,6 +6,30 @@ describe('Calc', function() {
         it('should throw an exception if input is empty', function() {
             assert.throws(() => calc.getResult(), Error);
         });
+
+        it('should throw an exception if second argument is not provided', function() {
+            assert.throws(() => calc.getResult('2 +'), Error);
+        });
+
+        it('should throw an exception if an operation is missing', function() {
+            assert.throws(() => calc.getResult('2 3 4 +'), Error);
+        });
+
+        it('should calculate simple multiplication', function() {
+            assert.equal(calc.getResult("12 23 *"), 12 * 23);
+        });
+
+        it('should calculate simple addition', function() {
+            assert.equal(calc.getResult("12 23 +"), 12 + 23);
+        });
+
+        it('should calculate simple subtraction', function() {
+            assert.equal(calc.getResult("12 23 -"), 12 - 23);
+        });
+
+        it('should calculate complex arithmetic expression', function() {
+            assert.equal(calc.getResult('5 1 2 + 4 * + 3 -'), 5 + ((1 + 2) * 4) - 3)
+        });
     });
 
     describe('scanInput', function() {

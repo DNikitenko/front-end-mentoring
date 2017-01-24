@@ -14,12 +14,42 @@ exports.getResult = function (input) {
         throw new Error("input cannot be empty");
     }
 
-    return 'Hello';
+    let operandStack = [];
+    for (let token of exports.scanInput(input)) {
+        if (Number.isInteger(token)) {
+            operandStack.push(token);
+        } else { // if token is operator
+            if (operandStack.length < 2) {
+                throw new Error('not enough operands for binary operator ' + token)
+            }
+
+            let arg2 = operandStack.pop();
+            let arg1 = operandStack.pop();
+
+            operandStack.push(evaluate(token, arg1, arg2));
+        } 
+    }
+
+    if (operandStack.length > 1) {
+        throw new Error('invalid infix expression');
+    }
+
+    return operandStack[0];
 };
 
 exports.scanInput = function(input) {
-    var parsedTokenStrings = input.split(' ');
+    let parsedTokenStrings = input.split(' ');
     return parsedTokenStrings.map(parseToken);
+};
+
+function evaluate(op, arg1, arg2) {
+    switch (op) {
+        case exports.OperatorEnum.PLUS: return arg1 + arg2;
+        case exports.OperatorEnum.MINUS: return arg1 - arg2;
+        case exports.OperatorEnum.MULT: return arg1 * arg2;
+
+        default: throw new Error('unknown operator ' + op);
+    }
 };
 
 function parseToken(tokenString) {
@@ -34,7 +64,7 @@ function parseToken(tokenString) {
 };
 
 function getOperatorToken(tokenString) {
-    for (var operator in exports.OperatorEnum) {
+    for (let operator in exports.OperatorEnum) {
         if (exports.OperatorEnum[operator] === tokenString)
             return exports.OperatorEnum[operator];
     }
