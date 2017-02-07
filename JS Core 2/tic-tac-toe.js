@@ -1,5 +1,6 @@
 var GRID_SIZE = 300;
-var CELL_SIZE = GRID_SIZE / 3;
+var CELLS_IN_ROW = 3;
+var CELL_SIZE = GRID_SIZE / CELLS_IN_ROW;
 
 var BORDER_THICKNESS = 2;
 
@@ -10,15 +11,44 @@ var CellStateEnum = {
     O: 2
 };
 
-var gameState = [
-    [CellStateEnum.Empty, CellStateEnum.Empty, CellStateEnum.Empty],
-    [CellStateEnum.Empty, CellStateEnum.Empty, CellStateEnum.Empty],
-    [CellStateEnum.Empty, CellStateEnum.Empty, CellStateEnum.Empty]
-];
+var TurnDirectionEnum = {
+    Left: 0,
+    Right: 1,
+    Up: 2,
+    Down: 3
+};
 
-var cursorPosition = {
-    x: 1,
-    y: 1
+var PlayerEnum = {
+    X: 0,
+    O: 1
+}
+
+var gameState;
+var gameOver;
+var currentPlayer;
+var cursorPosition;
+
+function initGame() {
+    gameOver = false;
+    gameState = [
+        [CellStateEnum.Empty, CellStateEnum.Empty, CellStateEnum.Empty],
+        [CellStateEnum.Empty, CellStateEnum.Empty, CellStateEnum.Empty],
+        [CellStateEnum.Empty, CellStateEnum.Empty, CellStateEnum.Empty]
+    ];
+
+    currentPlayer = PlayerEnum.X;
+    cursorPosition = {
+        x: 1,
+        y: 1
+    };
+
+    updateCurrentPlayerText();
+
+    var gameStatusDiv = document.getElementById("game-status");
+    gameStatusDiv.className = "";
+
+    var gameOverDiv = document.getElementById("game-over");
+    gameOverDiv.className = "hidden";
 };
 
 function drawGrid() {
@@ -41,11 +71,19 @@ function drawGrid() {
     canvasContext.strokeStyle = "#000";
     canvasContext.stroke();
 
-    for (var cellXIndex = 0; cellXIndex < 3; ++cellXIndex) {
-        for (var cellYIndex = 0; cellYIndex < 3; ++cellYIndex) {
+    for (var cellXIndex = 0; cellXIndex < CELLS_IN_ROW; ++cellXIndex) {
+        for (var cellYIndex = 0; cellYIndex < CELLS_IN_ROW; ++cellYIndex) {
             drawSymbol(CellStateEnum.Empty, cellXIndex, cellYIndex);
         }
     }
+};
+
+function clearCell(xCoord, yCoord) {
+    var canvas = document.getElementById("game-canvas");
+    var canvasContext = canvas.getContext("2d");
+
+    canvasContext.clearRect(xCoord * CELL_SIZE + BORDER_THICKNESS, yCoord * CELL_SIZE + BORDER_THICKNESS,
+        CELL_SIZE - 2 * BORDER_THICKNESS, CELL_SIZE - 2 * BORDER_THICKNESS);
 };
 
 function drawSymbol(cellState, xCoord, yCoord) {
@@ -53,6 +91,8 @@ function drawSymbol(cellState, xCoord, yCoord) {
     var canvasContext = canvas.getContext("2d");
 
     clearCell(xCoord, yCoord);
+    canvasContext.beginPath();
+
     switch (cellState) {
         case CellStateEnum.Empty:
             canvasContext.moveTo(xCoord * CELL_SIZE + CELL_SIZE * (1/3), yCoord * CELL_SIZE + CELL_SIZE / 2);
@@ -61,9 +101,7 @@ function drawSymbol(cellState, xCoord, yCoord) {
             canvasContext.stroke();
             break;
         case CellStateEnum.O:
-            canvasContext.beginPath();
             canvasContext.arc(xCoord * CELL_SIZE + CELL_SIZE / 2, yCoord * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE / 4, 0, 2 * Math.PI);
-            canvasContext.lineWidth = 2;
             canvasContext.strokeStyle = '#003300';
             canvasContext.stroke();
             break;
@@ -79,6 +117,7 @@ function drawSymbol(cellState, xCoord, yCoord) {
             canvasContext.setLineDash([6]);
             canvasContext.strokeRect(xCoord * CELL_SIZE + CELL_SIZE * (1/3), yCoord * CELL_SIZE + CELL_SIZE * (1/3),
                 CELL_SIZE * (1/3), CELL_SIZE * (1/3));
+            canvasContext.setLineDash([])
             break;
         
         default:
@@ -86,32 +125,161 @@ function drawSymbol(cellState, xCoord, yCoord) {
     }
 };
 
-function clearCell(xCoord, yCoord) {
-    var canvas = document.getElementById("game-canvas");
-    var canvasContext = canvas.getContext("2d");
-
-    canvasContext.clearRect(xCoord * CELL_SIZE + BORDER_THICKNESS, yCoord * CELL_SIZE + BORDER_THICKNESS,
-        CELL_SIZE - 2 * BORDER_THICKNESS, CELL_SIZE - 2 * BORDER_THICKNESS);
-};
-
 function drawCursor(cursorPosition) {
     drawSymbol(SelectCellState, cursorPosition.x, cursorPosition.y);
+};
+
+function changeCursorPosition(direction) {
+    switch (direction) {
+        case TurnDirectionEnum.Down:
+            if (cursorPosition.y < CELLS_IN_ROW - 1) {
+                ++cursorPosition.y;
+            }
+            break;
+        case TurnDirectionEnum.Up:
+            if (cursorPosition.y > 0) {
+                --cursorPosition.y;
+            }
+            break;
+        case TurnDirectionEnum.Left:
+            if (cursorPosition.x > 0) {
+                --cursorPosition.x;
+            }
+            break;
+        case TurnDirectionEnum.Right:
+            if (cursorPosition.x < CELLS_IN_ROW - 1) {
+                ++cursorPosition.x;
+            }
+            break;
+    }
+};
+
+function shiftTo(direction) {
+    drawSymbol(gameState[cursorPosition.x][cursorPosition.y], cursorPosition.x, cursorPosition.y);
+    changeCursorPosition(direction);
+    drawCursor(cursorPosition);
+};
+
+function reverseDiagonalWin() {
+    for (var cellIndex = 0; cellIndex < CELLS_IN_ROW; ++cellIndex) {
+        if (gameState[cellIndex][CELLS_IN_ROW - cellIndex - 1] === CellStateEnum.Empty ||
+            gameState[cellIndex][CELLS_IN_ROW - cellIndex - 1] !== gameState[0][CELLS_IN_ROW - 1]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+function directDiagonalWin() {
+    for (var cellIndex = 0; cellIndex < CELLS_IN_ROW; ++cellIndex) {
+        if (gameState[cellIndex][cellIndex] === CellStateEnum.Empty || gameState[cellIndex][cellIndex] !== gameState[0][0]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+function verticalWin() {
+    for (var rowIndex = 0; rowIndex < CELLS_IN_ROW; ++rowIndex) {
+        var win = true;
+
+        for (var colIndex = 0; colIndex < CELLS_IN_ROW; ++colIndex) {
+            if (gameState[rowIndex][colIndex] === CellStateEnum.Empty || gameState[rowIndex][colIndex] !== gameState[rowIndex][0]) {
+                win = false;
+            }
+        }
+
+        if (win) {
+            return true;
+        }
+    }
+};
+
+function horizontalWin() {
+    for (var colIndex = 0; colIndex < CELLS_IN_ROW; ++colIndex) {
+        var win = true;
+
+        for (var rowIndex = 0; rowIndex < CELLS_IN_ROW; ++rowIndex) {
+            if (gameState[rowIndex][colIndex] === CellStateEnum.Empty || gameState[rowIndex][colIndex] !== gameState[0][colIndex]) {
+                win = false;
+            }
+        }
+
+        if (win) {
+            return true;
+        }
+    }
+};
+
+function playerWins() {
+    return directDiagonalWin() || reverseDiagonalWin() || verticalWin() || horizontalWin();
+};
+
+function checkGameResult() {
+    if (playerWins()) {
+        gameOver = true;
+
+        var gameStatusDiv = document.getElementById("game-status");
+        gameStatusDiv.className = "hidden";
+
+        var gameOverDiv = document.getElementById("game-over");
+        gameOverDiv.className = "";
+    }
+};
+
+function updateCurrentPlayerText() {
+    var currentPlayerElement = document.getElementById("player-name");
+    currentPlayerElement.innerText = currentPlayer == PlayerEnum.O ? "O" : "X";
+};
+
+function makeTurn() {
+    if (gameState[cursorPosition.x][cursorPosition.y] !== CellStateEnum.Empty) {
+        return;
+    }
+
+    if (currentPlayer === PlayerEnum.X) {
+        gameState[cursorPosition.x][cursorPosition.y] = CellStateEnum.X;
+        currentPlayer = PlayerEnum.O;
+    }
+    else {
+        gameState[cursorPosition.x][cursorPosition.y] = CellStateEnum.O;
+        currentPlayer = PlayerEnum.X;
+    }
+
+    updateCurrentPlayerText();
+    drawSymbol(gameState[cursorPosition.x][cursorPosition.y], cursorPosition.x, cursorPosition.y);
+};
+
+function resetGame() {
+    initGame();
+    drawGrid();
+    drawCursor(cursorPosition);
 };
 
 function handleArrowKeyPress(e) {
     e = e || window.event;
 
-    if (e.keyCode == '38') {
-        console.log('up');
-    }
-    else if (e.keyCode == '40') {
-        console.log('down');
-    }
-    else if (e.keyCode == '37') {
-       console.log('left');
-    }
-    else if (e.keyCode == '39') {
-       console.log('right');
+    if (gameOver) {
+        resetGame();
+    } else {
+        if (e.keyCode === 38) {
+            shiftTo(TurnDirectionEnum.Up);
+        }
+        else if (e.keyCode === 40) {
+            shiftTo(TurnDirectionEnum.Down);
+        }
+        else if (e.keyCode === 37) {
+            shiftTo(TurnDirectionEnum.Left);
+        }
+        else if (e.keyCode === 39) {
+            shiftTo(TurnDirectionEnum.Right);
+        }
+        else if (e.keyCode === 32) {
+            makeTurn();
+            checkGameResult();
+        }
     }
 };
 
@@ -119,6 +287,5 @@ function setupEventHandlers() {
     document.addEventListener('keydown', handleArrowKeyPress, false);
 };
 
-drawGrid();
-drawCursor(cursorPosition);
+resetGame();
 setupEventHandlers();

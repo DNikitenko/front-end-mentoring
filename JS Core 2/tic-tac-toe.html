@@ -6,7 +6,14 @@
         <title>Tic-Tac-Toe - Dmitrii Nikitenko</title>
     </head>
     <body>
-        <canvas id="game-canvas" tabindex="1">
+        <div id="game-status">
+            Player <span id="player-name">X</span> moves
+        </div>
+        <div id="game-over" class="hidden">
+            Draw! Press any key to play again
+        </div>
+
+        <canvas id="game-canvas">
         </canvas>
 
         <script src="tic-tac-toe.js"></script>
