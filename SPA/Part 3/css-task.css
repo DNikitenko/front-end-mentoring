@@ -1,0 +1,46 @@
+* {
+    /* Set to make using of padding easier */
+    box-sizing: border-box;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-container-centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-section {
+    flex-basis: 0;
+    flex-grow: 1;
+}
+
+aside {
+    width: 20%;
+    padding: 25px 20px 50px 0;
+}
+
+section.main-content {
+    width: 48%;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clearfix::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.main > section, footer {
+    height: 100px;
+}

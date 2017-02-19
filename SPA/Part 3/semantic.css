@@ -1,0 +1,206 @@
+body {
+    font-family: 'Trirong', serif;
+    font-size: medium;
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 0 30px 30px 30px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3.2em;
+    font-weight: bold;
+}
+
+header {
+    font-size: 0.8em;
+    padding: 20px 0 17px 0;
+}
+
+header a {
+    color: initial;
+}
+
+section > h3 {
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+
+section > ul {
+    padding: initial;
+    margin: initial;
+}
+
+section > ul > li {
+    padding-top: 12px;
+    line-height: 20px;
+}
+
+footer {
+    padding-bottom: 10px;
+    
+    background: #333;
+    color: #fff;
+    font-size: 0.7em;
+    text-transform: uppercase;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+input {
+    width: 65%;
+}
+
+nav li,
+footer li {
+    display: inline-block;
+}
+
+footer li {
+    line-height: 16px;
+    padding: 0 11px 0 7px;
+}
+
+nav:first-child {
+    height: 40px;
+}
+
+nav:first-child > ul > li {
+    font-weight: bold;
+}
+
+nav:last-child {
+    height: 35px;
+    font-size: small;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.double-arrow-link::after {
+    content: ' \00bb';
+}
+
+.single-arrow-link::after {
+    content: ' \203a';
+}
+
+.italic {
+    font-style: italic;
+}
+
+.auto-top-margin {
+    margin-top: auto;
+}
+
+.user-administration {
+    margin-left: auto;
+    list-style: none;
+    height: 10px;
+}
+
+.user-administration > li {
+    display: inline-block;
+    line-height: 10px;
+    padding: 0 10px;
+}
+
+.nav-list {
+    width: 50%;
+    justify-content: space-between;
+}
+
+.nav-wrapper {
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+}
+
+.nav-wrapper > nav:first-child {
+    border-bottom: 1px solid #ccc;
+}
+
+.user-administration > li:not(:last-child) {
+    border-right: 1px solid #666;
+}
+
+footer li:not(:last-child) {
+    border-right: 1px solid #fff;
+}
+
+.flex-container-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.right-text-align {
+    text-align: right;
+}
+
+.more-arrow > span {
+    display: inline-block;
+    background-color: #ccc;
+    color: white;
+    padding: 0px 8px;
+}
+
+/* I coldn't implement arrow with an image as in the original site, so here's a dirty hack :) */
+.more-arrow::after {
+    content: ' ';
+    width: 0; 
+    height: 0;
+    display: inline-block;
+    border-top: 11px solid transparent;
+    border-bottom: 12px solid transparent; 
+    border-left: 12px solid #ccc;
+}
+
+.right-aside {
+    float: right;
+    width: 25%;
+    height: 160px;
+
+    margin-top: 80px;
+    padding: 20px 0;
+    border: 1px solid;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.right-aside > div:first-child {
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.right-aside > div:last-child {
+    border: 1px solid;
+    padding: 3px 10px;
+
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.9em;
+}
+
+.non-decorated {
+    text-decoration: none;
+    color: initial;
+}
+
+.shop-link {
+    color: #5160a6;
+}
+
+.white {
+    color: white;
+}
